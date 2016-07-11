@@ -1,8 +1,12 @@
-var react = require('react');
+var React = require('react');
 
-var league = react.createClass({
+var league = React.createClass({
   render: function(){
-    <div><h1>Hello</h1></div>
+    return(
+      <div>
+        <h1>Hello World</h1>
+      </div>
+    )
   }
 });
 

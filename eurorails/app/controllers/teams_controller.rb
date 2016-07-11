@@ -10,4 +10,6 @@ class TeamsController < ApplicationController
     render :json => team
   end
 
+  
+
 end

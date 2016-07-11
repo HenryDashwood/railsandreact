@@ -1,4 +1,6 @@
 class Team < ActiveRecord::Base
-  has_many :matches
   belongs_to :league
+  has_many :fixtures
+  has_many :matches, through: :fixtures
+
 end

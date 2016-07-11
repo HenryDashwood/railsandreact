@@ -49,12 +49,12 @@
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(38);
 	var League = __webpack_require__(168);
+	var LeagueGenerator = __webpack_require__(169);
 	
 	window.onload = function () {
-	  console.log("App Started");
-	  ReactDOM.render(
-	  // <League url="http://localost:3000/api/league"/>,
-	  document.getElementById('app'));
+	  console.log("App Started asdf");
+	  ReactDOM.render(React.createElement(League, { url: 'http://localost:3000/teams', __self: this
+	  }), document.getElementById('app'));
 	};
 
 /***/ },
@@ -20356,11 +20356,13 @@
 
 	'use strict';
 	
-	var react = __webpack_require__(1);
+	var React = __webpack_require__(1);
 	
-	var league = react.createClass({
+	var league = React.createClass({
+	  displayName: 'league',
+	
 	  render: function render() {
-	    React.createElement(
+	    return React.createElement(
 	      'div',
 	      {
 	        __self: this
@@ -20370,13 +20372,65 @@
 	        {
 	          __self: this
 	        },
-	        'Hello'
+	        'Hello World'
 	      )
 	    );
 	  }
 	});
 	
 	module.exports = league;
+
+/***/ },
+/* 169 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	var PropTypes = React.PropTypes;
+	var LeagueGenerator = React.createClass({
+	  displayName: 'LeagueGenerator',
+	
+	
+	  getInitialState: function getInitialState() {
+	    return { team: '' };
+	  },
+	
+	  handleTeamChange: function handleTeamChange(e) {
+	    this.setState({ team: e.target.value });
+	  },
+	
+	  handleSubmit: function handleSubmit(e) {
+	    e.preventDefault();
+	    var team = this.state.team.trim();
+	    if (!team) {
+	      return;
+	    }
+	    this.props.onLeagueSubmit({ team: team });
+	    this.setState({ team: '' });
+	  },
+	
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      {
+	        __self: this
+	      },
+	      React.createElement(
+	        'form',
+	        { className: 'teamForm', onSubmit: this.handleSubmit, __self: this
+	        },
+	        React.createElement('input', { type: 'text', placeholder: 'Team name', value: this.state.team, onChange: this.handleTeamChange, __self: this
+	        }),
+	        React.createElement('input', { type: 'submit', value: 'Post', __self: this
+	        })
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = LeagueGenerator;
 
 /***/ }
 /******/ ]);

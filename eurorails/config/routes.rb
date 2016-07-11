@@ -1,9 +1,8 @@
 Rails.application.routes.draw do
 
-  scope path: "api" do
-    resources :leagues
-  end
+  resources :leagues
   resources :teams
+  resources :matches
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

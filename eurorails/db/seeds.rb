@@ -10,3 +10,10 @@
 @team2 = Team.new({'name' => 'France'}).save
 @team3 = Team.new({'name' => 'Romania'}).save
 @team4 = Team.new({'name' => 'Switzerland'}).save
+
+@match1 = Match.new({'home_team' => 'Ablania', 'away_team' => 'France'}).save
+@match2 = Match.new({'home_team' => 'Ablania', 'away_team' => 'Romania'}).save
+@match3 = Match.new({'home_team' => 'Switzerland', 'away_team' => 'Albania'}).save
+@match4 = Match.new({'home_team' => 'France', 'away_team' => 'Romania'}).save
+@match5 = Match.new({'home_team' => 'Romania', 'away_team' => 'Switzerland'}).save
+@match6 = Match.new({'home_team' => 'Switzerland', 'away_team' => 'France'}).save
