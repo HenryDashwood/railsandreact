@@ -29,6 +29,10 @@ ActiveRecord::Schema.define(version: 20160710181938) do
   end
 
   create_table "matches", force: :cascade do |t|
+    t.string   "home_team"
+    t.string   "away_team"
+    t.integer  "home_score"
+    t.integer  "away_score"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -41,10 +45,11 @@ ActiveRecord::Schema.define(version: 20160710181938) do
     t.integer  "losses"
     t.integer  "goals_for"
     t.integer  "goals_against"
+    t.integer  "goal_difference"
     t.integer  "points"
     t.integer  "league_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
   add_index "teams", ["league_id"], name: "index_teams_on_league_id"

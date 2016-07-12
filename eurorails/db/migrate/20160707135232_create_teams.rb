@@ -8,6 +8,7 @@ class CreateTeams < ActiveRecord::Migration
       t.integer :losses
       t.integer :goals_for
       t.integer :goals_against
+      t.integer :goal_difference
       t.integer :points
 
       t.references :league, index: true, foreign_key: true
