@@ -20395,19 +20395,18 @@
 	    var newTeams = this.state.teams.concat([team]);
 	    this.setState({ teams: newTeams });
 	
-	    // var url = this.props.url;
-	    // var request = new XMLHttpRequest();
-	    // request.open("POST", url, true);
-	    // request.setRequestHeader("Content-Type", "application/json");
-	    // request.onload = function(){
-	    //   if(request.status === 200){
-	    //   }
-	    // }.bind(this)
-	    // request.send( JSON.stringify(team) );
+	    var url = this.props.url;
+	    var request = new XMLHttpRequest();
+	    request.open("POST", url, true);
+	    request.setRequestHeader("Content-Type", "application/json");
+	    request.onload = function () {
+	      if (request.status === 200) {}
+	    }.bind(this);
+	    request.send(JSON.stringify(team));
 	  },
 	
 	  render: function render() {
-	    // return ( <div> ji </div>)
+	
 	    var leagueTeams = this.state.teams.map(function (team, index) {
 	      return React.createElement(
 	        "tr",
@@ -20475,6 +20474,51 @@
 	            __self: this
 	          },
 	          team.points
+	        )
+	      );
+	    });
+	
+	    var leagueMatches = this.state.matches.map(function (match, index) {
+	      return React.createElement(
+	        "div",
+	        {
+	          __self: this
+	        },
+	        React.createElement(
+	          "h3",
+	          {
+	            __self: this
+	          },
+	          React.createElement("home_team", {
+	            __self: this
+	          })
+	        ),
+	        React.createElement(
+	          "h3",
+	          {
+	            __self: this
+	          },
+	          React.createElement("home_score", {
+	            __self: this
+	          })
+	        ),
+	        React.createElement(
+	          "h3",
+	          {
+	            __self: this
+	          },
+	          React.createElement("away_score", {
+	            __self: this
+	          })
+	        ),
+	        React.createElement(
+	          "h3",
+	          {
+	            __self: this
+	          },
+	          React.createElement("away_team", {
+	            __self: this
+	          })
 	        )
 	      );
 	    });
@@ -20586,6 +20630,13 @@
 	          leagueTeams
 	        )
 	      ),
+	      React.createElement(
+	        "div",
+	        {
+	          __self: this
+	        },
+	        leagueMatches
+	      ),
 	      React.createElement(TeamGenerator, { onTeamSubmit: this.onTeamSubmit, __self: this
 	      }),
 	      React.createElement(MatchGenerator, {
@@ -20651,7 +20702,7 @@
 	    this.setState({ match: e.target.value });
 	  },
 	
-	  handleSubmit: function handleSubmit(e) {
+	  handleMatchSubmit: function handleMatchSubmit(e) {
 	    e.preventDefault();
 	    var match = this.state.match.trim();
 	    if (!match) {
@@ -20662,6 +20713,7 @@
 	  },
 	
 	  render: function render() {
+	
 	    return React.createElement(
 	      'div',
 	      {
@@ -20669,7 +20721,7 @@
 	      },
 	      React.createElement(
 	        'form',
-	        { className: 'matchForm', onSubmit: this.handleSubmit, __self: this
+	        { className: 'matchForm', onSubmit: this.handleMatchSubmit, __self: this
 	        },
 	        React.createElement('input', { type: 'text', placeholder: 'Home team name', value: this.state.home_team, onChange: this.handleMatchChange, __self: this
 	        }),
@@ -20681,7 +20733,10 @@
 	        }),
 	        React.createElement('input', { type: 'submit', value: 'Post', __self: this
 	        })
-	      )
+	      ),
+	      React.createElement('div', {
+	        __self: this
+	      })
 	    );
 	  }
 	
@@ -20718,7 +20773,7 @@
 	      return;
 	    }
 	    this.props.onTeamSubmit({ name: teamName });
-	    this.setState({ team: team });
+	    // this.setState({team: team})
 	  },
 	
 	  render: function render() {
@@ -20727,18 +20782,14 @@
 	      {
 	        __self: this
 	      },
-	      '// ',
 	      React.createElement(
 	        'form',
 	        { className: 'teamForm', onSubmit: this.handleTeamSubmit, __self: this
 	        },
-	        '//   ',
 	        React.createElement('input', { type: 'text', placeholder: 'Team name', value: this.state.team, onChange: this.handleTeamChange, __self: this
 	        }),
-	        '//   ',
 	        React.createElement('input', { type: 'submit', value: 'Post', __self: this
-	        }),
-	        '// '
+	        })
 	      )
 	    );
 	  }

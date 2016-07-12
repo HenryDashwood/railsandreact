@@ -6,10 +6,16 @@ class TeamsController < ApplicationController
   end
 
   def show
-    team = Team.find(params[:id])
-    render :json => team
+    render :json => Team.find(params[:id])
   end
 
-  
+  def create
+    render :json => Team.create({name: params[:name]})
+  end
+
+  private
+  def team_params
+    params.require(:team).permit(:name)
+  end
 
 end

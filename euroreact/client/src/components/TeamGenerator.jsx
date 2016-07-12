@@ -19,16 +19,16 @@ var TeamGenerator = React.createClass({
       return;
     }
     this.props.onTeamSubmit({name: teamName})
-    this.setState({team: team})
+    // this.setState({team: team})
   },
 
   render: function() {
     return (
       <div>
-        // <form className="teamForm" onSubmit={this.handleTeamSubmit}>
-        //   <input type="text" placeholder="Team name" value={this.state.team} onChange={this.handleTeamChange}/>
-        //   <input type="submit" value="Post" />
-        // </form>
+        <form className="teamForm" onSubmit={this.handleTeamSubmit}>
+          <input type="text" placeholder="Team name" value={this.state.team} onChange={this.handleTeamChange}/>
+          <input type="submit" value="Post" />
+        </form>
       </div>
     );
   }

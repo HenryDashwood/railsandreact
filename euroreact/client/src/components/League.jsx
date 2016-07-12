@@ -37,19 +37,19 @@ var League = React.createClass({
     var newTeams = this.state.teams.concat( [team] );
     this.setState({teams: newTeams});
 
-    // var url = this.props.url;
-    // var request = new XMLHttpRequest();
-    // request.open("POST", url, true);
-    // request.setRequestHeader("Content-Type", "application/json");
-    // request.onload = function(){
-    //   if(request.status === 200){
-    //   }
-    // }.bind(this)
-    // request.send( JSON.stringify(team) );
+    var url = this.props.url;
+    var request = new XMLHttpRequest();
+    request.open("POST", url, true);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.onload = function(){
+      if(request.status === 200){
+      }
+    }.bind(this)
+    request.send( JSON.stringify(team) );
   },
 
   render: function(){
-    // return ( <div> ji </div>)
+
     var leagueTeams = this.state.teams.map(function(team, index) {
       return (
         <tr key={index}>
@@ -63,6 +63,17 @@ var League = React.createClass({
           <td>{team.goal_difference}</td>
           <td>{team.points}</td>
         </tr>
+      );
+    });
+
+    var leagueMatches = this.state.matches.map(function(match, index) {
+      return (
+        <div>
+          <h3><home_team /></h3>
+          <h3><home_score /></h3>
+          <h3><away_score /></h3>
+          <h3><away_team /></h3>
+        </div>
       );
     });
 
@@ -92,6 +103,9 @@ var League = React.createClass({
             {leagueTeams}
           </tbody>
         </table>
+        <div>
+          {leagueMatches}
+        </div>
         <TeamGenerator onTeamSubmit={this.onTeamSubmit}/>
         <MatchGenerator />
 
