@@ -52,8 +52,8 @@
 	var LeagueGenerator = __webpack_require__(169);
 	
 	window.onload = function () {
-	  console.log("App Started asdf");
-	  ReactDOM.render(React.createElement(League, { url: 'http://localost:3000/teams', __self: this
+	  console.log("App Started");
+	  ReactDOM.render(React.createElement(League, { url: 'http://localhost:3000/teams', __self: this
 	  }), document.getElementById('app'));
 	};
 
@@ -20354,31 +20354,259 @@
 /* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	var React = __webpack_require__(1);
+	var LeagueGenerator = __webpack_require__(169);
+	var MatchGenerator = __webpack_require__(170);
+	var Team = __webpack_require__(172);
+	var TeamGenerator = __webpack_require__(171);
 	
-	var league = React.createClass({
-	  displayName: 'league',
+	var League = React.createClass({
+	  displayName: "League",
+	
+	
+	  loadTeamsFromServer: function loadTeamsFromServer() {
+	    var url = this.props.url;
+	    var request = new XMLHttpRequest();
+	    request.open("GET", url, true);
+	    request.onload = function () {
+	      console.log('recevied data');
+	      if (request.status === 200) {
+	        var data = JSON.parse(request.responseText);
+	        console.log('got the data', data);
+	        // this.loadTeamsFromServer();
+	        this.setState({ teams: data });
+	      }
+	    }.bind(this);
+	    request.send();
+	  },
+	
+	  componentDidMount: function componentDidMount() {
+	    this.loadTeamsFromServer();
+	  },
+	
+	  getInitialState: function getInitialState() {
+	    return { teams: [], matches: [] };
+	  },
+	
+	  onTeamSubmit: function onTeamSubmit(team) {
+	    console.log("team submit called", team);
+	    var newTeams = this.state.teams.concat([team]);
+	    this.setState({ teams: newTeams });
+	
+	    // var url = this.props.url;
+	    // var request = new XMLHttpRequest();
+	    // request.open("POST", url, true);
+	    // request.setRequestHeader("Content-Type", "application/json");
+	    // request.onload = function(){
+	    //   if(request.status === 200){
+	    //   }
+	    // }.bind(this)
+	    // request.send( JSON.stringify(team) );
+	  },
 	
 	  render: function render() {
+	    // return ( <div> ji </div>)
+	    var leagueTeams = this.state.teams.map(function (team, index) {
+	      return React.createElement(
+	        "tr",
+	        { key: index, __self: this
+	        },
+	        React.createElement(
+	          "td",
+	          {
+	            __self: this
+	          },
+	          team.name
+	        ),
+	        React.createElement(
+	          "td",
+	          {
+	            __self: this
+	          },
+	          team.played
+	        ),
+	        React.createElement(
+	          "td",
+	          {
+	            __self: this
+	          },
+	          team.wins
+	        ),
+	        React.createElement(
+	          "td",
+	          {
+	            __self: this
+	          },
+	          team.draws
+	        ),
+	        React.createElement(
+	          "td",
+	          {
+	            __self: this
+	          },
+	          team.losses
+	        ),
+	        React.createElement(
+	          "td",
+	          {
+	            __self: this
+	          },
+	          team.goals_for
+	        ),
+	        React.createElement(
+	          "td",
+	          {
+	            __self: this
+	          },
+	          team.goals_against
+	        ),
+	        React.createElement(
+	          "td",
+	          {
+	            __self: this
+	          },
+	          team.goal_difference
+	        ),
+	        React.createElement(
+	          "td",
+	          {
+	            __self: this
+	          },
+	          team.points
+	        )
+	      );
+	    });
+	
 	    return React.createElement(
-	      'div',
+	      "div",
 	      {
 	        __self: this
 	      },
 	      React.createElement(
-	        'h1',
+	        "div",
+	        { "class": "main-nav", __self: this
+	        },
+	        React.createElement("img", { src: "http://cdn.pulselive.com/test/client/pl/dev/i/elements/premier-league-logo-header-mob.svg", alt: "Premier League Logo", __self: this
+	        }),
+	        React.createElement(
+	          "h1",
+	          {
+	            __self: this
+	          },
+	          "League Table"
+	        )
+	      ),
+	      React.createElement(
+	        "table",
 	        {
 	          __self: this
 	        },
-	        'Hello World'
+	        React.createElement(
+	          "thead",
+	          {
+	            __self: this
+	          },
+	          React.createElement(
+	            "tr",
+	            {
+	              __self: this
+	            },
+	            React.createElement(
+	              "th",
+	              {
+	                __self: this
+	              },
+	              "Nation"
+	            ),
+	            React.createElement(
+	              "th",
+	              {
+	                __self: this
+	              },
+	              "Matches"
+	            ),
+	            React.createElement(
+	              "th",
+	              {
+	                __self: this
+	              },
+	              "Wins"
+	            ),
+	            React.createElement(
+	              "th",
+	              {
+	                __self: this
+	              },
+	              "Draws"
+	            ),
+	            React.createElement(
+	              "th",
+	              {
+	                __self: this
+	              },
+	              "Losses"
+	            ),
+	            React.createElement(
+	              "th",
+	              {
+	                __self: this
+	              },
+	              "Goals for"
+	            ),
+	            React.createElement(
+	              "th",
+	              {
+	                __self: this
+	              },
+	              "Goals against"
+	            ),
+	            React.createElement(
+	              "th",
+	              {
+	                __self: this
+	              },
+	              "Goal Difference"
+	            ),
+	            React.createElement(
+	              "th",
+	              {
+	                __self: this
+	              },
+	              "Points"
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          "tbody",
+	          {
+	            __self: this
+	          },
+	          leagueTeams
+	        )
+	      ),
+	      React.createElement(TeamGenerator, { onTeamSubmit: this.onTeamSubmit, __self: this
+	      }),
+	      React.createElement(MatchGenerator, {
+	        __self: this
+	      }),
+	      React.createElement(
+	        "div",
+	        { "class": "footer", __self: this
+	        },
+	        React.createElement(
+	          "div",
+	          { "class": "copy-sign", __self: this
+	          },
+	          "© Henry Dashwood"
+	        )
 	      )
 	    );
 	  }
 	});
 	
-	module.exports = league;
+	module.exports = League;
 
 /***/ },
 /* 169 */
@@ -20388,26 +20616,49 @@
 	
 	var React = __webpack_require__(1);
 	var PropTypes = React.PropTypes;
+	
 	var LeagueGenerator = React.createClass({
 	  displayName: 'LeagueGenerator',
 	
 	
+	  render: function render() {
+	    return React.createElement('div', {
+	      __self: this
+	    });
+	  }
+	
+	});
+	
+	module.exports = LeagueGenerator;
+
+/***/ },
+/* 170 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	var PropTypes = React.PropTypes;
+	var MatchGenerator = React.createClass({
+	  displayName: 'MatchGenerator',
+	
+	
 	  getInitialState: function getInitialState() {
-	    return { team: '' };
+	    return { match: '' };
 	  },
 	
 	  handleTeamChange: function handleTeamChange(e) {
-	    this.setState({ team: e.target.value });
+	    this.setState({ match: e.target.value });
 	  },
 	
 	  handleSubmit: function handleSubmit(e) {
 	    e.preventDefault();
-	    var team = this.state.team.trim();
-	    if (!team) {
+	    var match = this.state.match.trim();
+	    if (!match) {
 	      return;
 	    }
-	    this.props.onLeagueSubmit({ team: team });
-	    this.setState({ team: '' });
+	    this.props.onLeagueSubmit({ match: match });
+	    this.setState({ match: '' });
 	  },
 	
 	  render: function render() {
@@ -20418,9 +20669,15 @@
 	      },
 	      React.createElement(
 	        'form',
-	        { className: 'teamForm', onSubmit: this.handleSubmit, __self: this
+	        { className: 'matchForm', onSubmit: this.handleSubmit, __self: this
 	        },
-	        React.createElement('input', { type: 'text', placeholder: 'Team name', value: this.state.team, onChange: this.handleTeamChange, __self: this
+	        React.createElement('input', { type: 'text', placeholder: 'Home team name', value: this.state.home_team, onChange: this.handleMatchChange, __self: this
+	        }),
+	        React.createElement('input', { type: 'text', placeholder: 'Home team score', value: this.state.home_score, onChange: this.handleMatchChange, __self: this
+	        }),
+	        React.createElement('input', { type: 'integer', placeholder: 'Away team score', value: this.state.away_score, onChange: this.handleMatchChange, __self: this
+	        }),
+	        React.createElement('input', { type: 'text', placeholder: 'Away team name', value: this.state.away_team, onChange: this.handleMatchChange, __self: this
 	        }),
 	        React.createElement('input', { type: 'submit', value: 'Post', __self: this
 	        })
@@ -20430,7 +20687,96 @@
 	
 	});
 	
-	module.exports = LeagueGenerator;
+	module.exports = MatchGenerator;
+
+/***/ },
+/* 171 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	var PropTypes = React.PropTypes;
+	
+	var TeamGenerator = React.createClass({
+	  displayName: 'TeamGenerator',
+	
+	
+	  getInitialState: function getInitialState() {
+	    return { team: '' };
+	  },
+	
+	  handleTeamChange: function handleTeamChange(e) {
+	    this.setState({ team: e.target.value });
+	  },
+	
+	  handleTeamSubmit: function handleTeamSubmit(e) {
+	    e.preventDefault();
+	    console.log("Yeah");
+	    var teamName = this.state.team.trim();
+	    if (!teamName) {
+	      return;
+	    }
+	    this.props.onTeamSubmit({ name: teamName });
+	    this.setState({ team: team });
+	  },
+	
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      {
+	        __self: this
+	      },
+	      '// ',
+	      React.createElement(
+	        'form',
+	        { className: 'teamForm', onSubmit: this.handleTeamSubmit, __self: this
+	        },
+	        '//   ',
+	        React.createElement('input', { type: 'text', placeholder: 'Team name', value: this.state.team, onChange: this.handleTeamChange, __self: this
+	        }),
+	        '//   ',
+	        React.createElement('input', { type: 'submit', value: 'Post', __self: this
+	        }),
+	        '// '
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = TeamGenerator;
+	
+	//and also add the team to the database (an ajax POST request)
+	//Make another form to make matches and take in match results
+	//make that form update the league table appropriately
+
+/***/ },
+/* 172 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	var PropTypes = React.PropTypes;
+	
+	var Team = React.createClass({
+	  displayName: 'Team',
+	
+	
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      {
+	        __self: this
+	      },
+	      this.props.name
+	    );
+	  }
+	
+	});
+	
+	module.exports = Team;
 
 /***/ }
 /******/ ]);

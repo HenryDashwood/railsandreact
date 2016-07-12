@@ -33,9 +33,9 @@ var League = React.createClass({
   },
 
   onTeamSubmit: function(team) {
-    console.log("team submit called", team)
-    var newTeams = this.state.teams.concat( [team] );
-    this.setState({teams: newTeams});
+    // console.log("team submit called", team)
+    // var newTeams = teams.concat([team]);
+    // this.setState({data: newTeams});
 
     // var url = this.props.url;
     // var request = new XMLHttpRequest();
@@ -92,8 +92,9 @@ var League = React.createClass({
             {leagueTeams}
           </tbody>
         </table>
-        <TeamGenerator onTeamSubmit={this.onTeamSubmit}/>
-        <MatchGenerator />
+        <League data={this.state.data}/>
+        <TeamGenerator />
+        // <MatchGenerator />
 
         <div class="footer">
           <div class="copy-sign">{'\u00A9 Henry Dashwood'}</div>

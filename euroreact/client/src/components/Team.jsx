@@ -1,14 +1,16 @@
 var React = require('react');
 var PropTypes = React.PropTypes;
 
-var LeagueGenerator = React.createClass({
+var Team = React.createClass({
 
   render: function() {
     return (
-      <div />
+      <div>
+        {this.props.name}
+      </div>
     );
   }
 
 });
 
-module.exports = LeagueGenerator;
+module.exports = Team;
