@@ -56,7 +56,7 @@ var MatchGenerator = React.createClass({
 
         <form className="matchForm" onSubmit={this.handleMatchSubmit}>
           <input type="text" placeholder="Home team name" value={this.state.home_team} onChange={this.handleHomeTeamChange}/>
-          <input type="text" placeholder="Home team score" value={this.state.home_score} onChange={this.handleHomeScoreChange}/>
+          <input type="integer" placeholder="Home team score" value={this.state.home_score} onChange={this.handleHomeScoreChange}/>
           <input type="integer" placeholder="Away team score" value={this.state.away_score} onChange={this.handleAwayScoreChange}/>
           <input type="text" placeholder="Away team name" value={this.state.away_team} onChange={this.handleAwayTeamChange}/>
           <input type="submit" value="Post" />

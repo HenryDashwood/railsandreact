@@ -64,6 +64,13 @@ var League = React.createClass({
     console.log("Match submit called", match);
     var newMatches = this.state.matches.concat([match]);
 
+    // update team information
+    // loop through the this.state.teams
+    // for each team update points if it matches the team name in the match
+    for (var team of this.state.teams){
+      this.teamMatchesPlayed(match, team);
+    }
+    // should update table rankings
 
     this.setState({matches: newMatches});
 
@@ -76,6 +83,46 @@ var League = React.createClass({
       }
     }.bind(this)
     request.send( JSON.stringify(match) );
+  },
+
+  teamMatchesPlayed: function(match, team) {
+    if(match.home_team === team.name) {
+      team.played += 1;
+      team.goals_for += parseInt(match.home_score);
+      team.goals_against += parseInt(match.away_score);
+      team.goal_difference += parseInt(team.goals_for) - parseInt(team.goals_against);
+      if(match.home_score > match.away_score) {
+        team.wins += 1;
+        team.points += 3;
+      }
+      else if(match.home_score < match.away_score) {
+        team.losses += 1;
+        team.points += 0;
+      }
+      else if(match.home_score === match.away_score) {
+        team.draws += 1;
+        team.points += 1;
+      }
+    }
+    else if(match.away_team === team.name) {
+      team.played += 1;
+      team.goals_for += parseInt(match.away_score);
+      team.goals_against += parseInt(match.home_score);
+      team.goal_difference += parseInt(team.goals_for) - parseInt(team.goals_against);
+      if(match.home_score < match.away_score) {
+        team.wins += 1;
+        team.points += 3;
+      }
+      else if(match.home_score > match.away_score) {
+        team.losses += 1;
+        team.points += 0;
+      }
+      else if(match.home_score === match.away_score) {
+        team.draws += 1;
+        team.points += 1;
+      }
+    }
+
   },
 
   render: function(){

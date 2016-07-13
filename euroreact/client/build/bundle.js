@@ -20423,6 +20423,35 @@
 	    console.log("Match submit called", match);
 	    var newMatches = this.state.matches.concat([match]);
 	
+	    // update team information
+	    // loop through the this.state.teams
+	    // for each team update points if it matches the team name in the match
+	    var _iteratorNormalCompletion = true;
+	    var _didIteratorError = false;
+	    var _iteratorError = undefined;
+	
+	    try {
+	      for (var _iterator = this.state.teams[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	        var team = _step.value;
+	
+	        this.teamMatchesPlayed(match, team);
+	      }
+	      // should update table rankings
+	    } catch (err) {
+	      _didIteratorError = true;
+	      _iteratorError = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion && _iterator.return) {
+	          _iterator.return();
+	        }
+	      } finally {
+	        if (_didIteratorError) {
+	          throw _iteratorError;
+	        }
+	      }
+	    }
+	
 	    this.setState({ matches: newMatches });
 	
 	    var url = this.props.matchUrl;
@@ -20433,6 +20462,40 @@
 	      if (request.status === 200) {}
 	    }.bind(this);
 	    request.send(JSON.stringify(match));
+	  },
+	
+	  teamMatchesPlayed: function teamMatchesPlayed(match, team) {
+	    if (match.home_team === team.name) {
+	      team.played += 1;
+	      team.goals_for += parseInt(match.home_score);
+	      team.goals_against += parseInt(match.away_score);
+	      team.goal_difference += parseInt(team.goals_for) - parseInt(team.goals_against);
+	      if (match.home_score > match.away_score) {
+	        team.wins += 1;
+	        team.points += 3;
+	      } else if (match.home_score < match.away_score) {
+	        team.losses += 1;
+	        team.points += 0;
+	      } else if (match.home_score === match.away_score) {
+	        team.draws += 1;
+	        team.points += 1;
+	      }
+	    } else if (match.away_team === team.name) {
+	      team.played += 1;
+	      team.goals_for += parseInt(match.away_score);
+	      team.goals_against += parseInt(match.home_score);
+	      team.goal_difference += parseInt(team.goals_for) - parseInt(team.goals_against);
+	      if (match.home_score < match.away_score) {
+	        team.wins += 1;
+	        team.points += 3;
+	      } else if (match.home_score > match.away_score) {
+	        team.losses += 1;
+	        team.points += 0;
+	      } else if (match.home_score === match.away_score) {
+	        team.draws += 1;
+	        team.points += 1;
+	      }
+	    }
 	  },
 	
 	  render: function render() {
@@ -20816,7 +20879,7 @@
 	        },
 	        React.createElement('input', { type: 'text', placeholder: 'Home team name', value: this.state.home_team, onChange: this.handleHomeTeamChange, __self: this
 	        }),
-	        React.createElement('input', { type: 'text', placeholder: 'Home team score', value: this.state.home_score, onChange: this.handleHomeScoreChange, __self: this
+	        React.createElement('input', { type: 'integer', placeholder: 'Home team score', value: this.state.home_score, onChange: this.handleHomeScoreChange, __self: this
 	        }),
 	        React.createElement('input', { type: 'integer', placeholder: 'Away team score', value: this.state.away_score, onChange: this.handleAwayScoreChange, __self: this
 	        }),
@@ -20860,151 +20923,7 @@
 	    if (!teamName) {
 	      return;
 	    }
-	    this.props.onTeamSubmit({ name: teamName });
-	  },
-	
-	  teamMatchesPlayed: function teamMatchesPlayed() {
-	    var _iteratorNormalCompletion = true;
-	    var _didIteratorError = false;
-	    var _iteratorError = undefined;
-	
-	    try {
-	      for (var _iterator = matches[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	        match = _step.value;
-	
-	
-	        if (match.home_team === team.name) {
-	          team.played += 1;
-	          team.goals_for += match.home_score;
-	        } else if (match.away_team === team.name) {
-	          team.played += 1;
-	          team.goals_for += match.away_score;
-	        } else {
-	          return;
-	        };
-	      }
-	    } catch (err) {
-	      _didIteratorError = true;
-	      _iteratorError = err;
-	    } finally {
-	      try {
-	        if (!_iteratorNormalCompletion && _iterator.return) {
-	          _iterator.return();
-	        }
-	      } finally {
-	        if (_didIteratorError) {
-	          throw _iteratorError;
-	        }
-	      }
-	    }
-	
-	    ;
-	  },
-	
-	  teamWins: function teamWins() {
-	    var _iteratorNormalCompletion2 = true;
-	    var _didIteratorError2 = false;
-	    var _iteratorError2 = undefined;
-	
-	    try {
-	      for (var _iterator2 = matches[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	        match = _step2.value;
-	
-	        if (match.home_team === team.name && match.homeTeamWon) {
-	          team.wins += 1;
-	          team.points += 3;
-	        } else if (match.away_team === team.name && match.awayTeamWon) {
-	          team.wins += 1;
-	          team.points += 3;
-	        } else {
-	          return;
-	        }
-	      }
-	    } catch (err) {
-	      _didIteratorError2 = true;
-	      _iteratorError2 = err;
-	    } finally {
-	      try {
-	        if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	          _iterator2.return();
-	        }
-	      } finally {
-	        if (_didIteratorError2) {
-	          throw _iteratorError2;
-	        }
-	      }
-	    }
-	
-	    return total;
-	  },
-	
-	  teamDraws: function teamDraws() {
-	    var _iteratorNormalCompletion3 = true;
-	    var _didIteratorError3 = false;
-	    var _iteratorError3 = undefined;
-	
-	    try {
-	      for (var _iterator3 = matches[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-	        match = _step3.value;
-	
-	        if ((match.home_team || match.away_team) === team.name && match.draw) {
-	          team.draws += 1;
-	          team.points += 1;
-	        }
-	      }
-	    } catch (err) {
-	      _didIteratorError3 = true;
-	      _iteratorError3 = err;
-	    } finally {
-	      try {
-	        if (!_iteratorNormalCompletion3 && _iterator3.return) {
-	          _iterator3.return();
-	        }
-	      } finally {
-	        if (_didIteratorError3) {
-	          throw _iteratorError3;
-	        }
-	      }
-	    }
-	
-	    return total;
-	  },
-	
-	  teamLosses: function teamLosses() {
-	    var _iteratorNormalCompletion4 = true;
-	    var _didIteratorError4 = false;
-	    var _iteratorError4 = undefined;
-	
-	    try {
-	      for (var _iterator4 = matches[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-	        match = _step4.value;
-	
-	        if (match.home_team === team.name && match.awayTeamWon) {
-	          team.losses += 1;
-	        } else if (match.away_team === team.name && match.homeTeamWon) {
-	          team.losses += 1;
-	        } else {
-	          return;
-	        }
-	      }
-	    } catch (err) {
-	      _didIteratorError4 = true;
-	      _iteratorError4 = err;
-	    } finally {
-	      try {
-	        if (!_iteratorNormalCompletion4 && _iterator4.return) {
-	          _iterator4.return();
-	        }
-	      } finally {
-	        if (_didIteratorError4) {
-	          throw _iteratorError4;
-	        }
-	      }
-	    }
-	  },
-	
-	  teamGoalDifference: function teamGoalDifference() {
-	    team.goal_difference === team.goals_for - team.goals_against;
+	    this.props.onTeamSubmit({ name: teamName, played: 0, wins: 0, draws: 0, losses: 0, goals_for: 0, goals_against: 0, goal_difference: 0, points: 0 });
 	  },
 	
 	  render: function render() {
@@ -21028,9 +20947,6 @@
 	});
 	
 	module.exports = TeamGenerator;
-	
-	//Make another form to make matches and take in match results
-	//make that form update the league table appropriately
 
 /***/ }
 /******/ ]);
