@@ -1,31 +1,43 @@
 var React = require('react');
 var LeagueGenerator = require("./LeagueGenerator.jsx");
 var MatchGenerator = require("./MatchGenerator.jsx");
-var Team = require("./Team.jsx");
 var TeamGenerator = require("./TeamGenerator.jsx");
 
 var League = React.createClass({
 
   loadTeamsFromServer: function() {
-    var url = this.props.url;
+    var url = this.props.teamUrl;
     var request = new XMLHttpRequest();
     request.open("GET", url, true);
     request.onload = function(){
-      console.log('recevied data')
+      console.log('Recevied team data')
       if(request.status === 200){
-        var data = JSON.parse(request.responseText);
-        console.log('got the data', data)
-        // this.loadTeamsFromServer();
-        this.setState({teams: data});
-
+        var teams = JSON.parse(request.responseText);
+        console.log('Got the team data', teams)
+        this.setState({teams: teams});
       }
     }.bind(this)
     request.send();
+  },
 
+  loadMatchesFromServer: function() {
+    var url = this.props.matchUrl;
+    var request = new XMLHttpRequest();
+    request.open("GET", url, true);
+    request.onload = function(){
+      console.log('Recevied match data')
+      if(request.status === 200){
+        var matches = JSON.parse(request.responseText);
+        console.log('Got the match data', matches)
+        this.setState({matches: matches});
+      }
+    }.bind(this)
+    request.send();
   },
 
   componentDidMount: function() {
     this.loadTeamsFromServer();
+    this.loadMatchesFromServer();
   },
 
   getInitialState: function() {
@@ -33,11 +45,11 @@ var League = React.createClass({
   },
 
   onTeamSubmit: function(team) {
-    console.log("team submit called", team)
-    var newTeams = this.state.teams.concat( [team] );
+    console.log("Team submit called", team);
+    var newTeams = this.state.teams.concat([team]);
     this.setState({teams: newTeams});
 
-    var url = this.props.url;
+    var url = this.props.teamUrl;
     var request = new XMLHttpRequest();
     request.open("POST", url, true);
     request.setRequestHeader("Content-Type", "application/json");
@@ -46,6 +58,24 @@ var League = React.createClass({
       }
     }.bind(this)
     request.send( JSON.stringify(team) );
+  },
+
+  onMatchSubmit: function(match) {
+    console.log("Match submit called", match);
+    var newMatches = this.state.matches.concat([match]);
+
+
+    this.setState({matches: newMatches});
+
+    var url = this.props.matchUrl;
+    var request = new XMLHttpRequest();
+    request.open("POST", url, true);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.onload = function(){
+      if(request.status === 200){
+      }
+    }.bind(this)
+    request.send( JSON.stringify(match) );
   },
 
   render: function(){
@@ -68,12 +98,12 @@ var League = React.createClass({
 
     var leagueMatches = this.state.matches.map(function(match, index) {
       return (
-        <div>
-          <h3><home_team /></h3>
-          <h3><home_score /></h3>
-          <h3><away_score /></h3>
-          <h3><away_team /></h3>
-        </div>
+        <tr key={index}>
+          <td>{match.home_team}</td>
+          <td>{match.home_score}</td>
+          <td>{match.away_score}</td>
+          <td>{match.away_team}</td>
+        </tr>
       );
     });
 
@@ -85,7 +115,7 @@ var League = React.createClass({
           <h1>League Table</h1>
         </div>
 
-        <table>
+        <table class="table">
           <thead>
             <tr>
               <th>Nation</th>
@@ -103,11 +133,23 @@ var League = React.createClass({
             {leagueTeams}
           </tbody>
         </table>
-        <div>
-          {leagueMatches}
-        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Home Team</th>
+              <th>Home Score</th>
+              <th>Away Score</th>
+              <th>Away Team</th>
+            </tr>
+          </thead>
+          <tbody>
+            {leagueMatches}
+          </tbody>
+        </table>
+
         <TeamGenerator onTeamSubmit={this.onTeamSubmit}/>
-        <MatchGenerator />
+        <MatchGenerator onMatchSubmit={this.onMatchSubmit}/>
 
         <div class="footer">
           <div class="copy-sign">{'\u00A9 Henry Dashwood'}</div>

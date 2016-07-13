@@ -53,7 +53,7 @@
 	
 	window.onload = function () {
 	  console.log("App Started");
-	  ReactDOM.render(React.createElement(League, { url: 'http://localhost:3000/teams', __self: this
+	  ReactDOM.render(React.createElement(League, { teamUrl: 'http://localhost:3000/teams', matchUrl: 'http://localhost:3000/matches', __self: this
 	  }), document.getElementById('app'));
 	};
 
@@ -20359,7 +20359,6 @@
 	var React = __webpack_require__(1);
 	var LeagueGenerator = __webpack_require__(169);
 	var MatchGenerator = __webpack_require__(170);
-	var Team = __webpack_require__(172);
 	var TeamGenerator = __webpack_require__(171);
 	
 	var League = React.createClass({
@@ -20367,16 +20366,30 @@
 	
 	
 	  loadTeamsFromServer: function loadTeamsFromServer() {
-	    var url = this.props.url;
+	    var url = this.props.teamUrl;
 	    var request = new XMLHttpRequest();
 	    request.open("GET", url, true);
 	    request.onload = function () {
-	      console.log('recevied data');
+	      console.log('Recevied team data');
 	      if (request.status === 200) {
-	        var data = JSON.parse(request.responseText);
-	        console.log('got the data', data);
-	        // this.loadTeamsFromServer();
-	        this.setState({ teams: data });
+	        var teams = JSON.parse(request.responseText);
+	        console.log('Got the team data', teams);
+	        this.setState({ teams: teams });
+	      }
+	    }.bind(this);
+	    request.send();
+	  },
+	
+	  loadMatchesFromServer: function loadMatchesFromServer() {
+	    var url = this.props.matchUrl;
+	    var request = new XMLHttpRequest();
+	    request.open("GET", url, true);
+	    request.onload = function () {
+	      console.log('Recevied match data');
+	      if (request.status === 200) {
+	        var matches = JSON.parse(request.responseText);
+	        console.log('Got the match data', matches);
+	        this.setState({ matches: matches });
 	      }
 	    }.bind(this);
 	    request.send();
@@ -20384,6 +20397,7 @@
 	
 	  componentDidMount: function componentDidMount() {
 	    this.loadTeamsFromServer();
+	    this.loadMatchesFromServer();
 	  },
 	
 	  getInitialState: function getInitialState() {
@@ -20391,11 +20405,11 @@
 	  },
 	
 	  onTeamSubmit: function onTeamSubmit(team) {
-	    console.log("team submit called", team);
+	    console.log("Team submit called", team);
 	    var newTeams = this.state.teams.concat([team]);
 	    this.setState({ teams: newTeams });
 	
-	    var url = this.props.url;
+	    var url = this.props.teamUrl;
 	    var request = new XMLHttpRequest();
 	    request.open("POST", url, true);
 	    request.setRequestHeader("Content-Type", "application/json");
@@ -20403,6 +20417,22 @@
 	      if (request.status === 200) {}
 	    }.bind(this);
 	    request.send(JSON.stringify(team));
+	  },
+	
+	  onMatchSubmit: function onMatchSubmit(match) {
+	    console.log("Match submit called", match);
+	    var newMatches = this.state.matches.concat([match]);
+	
+	    this.setState({ matches: newMatches });
+	
+	    var url = this.props.matchUrl;
+	    var request = new XMLHttpRequest();
+	    request.open("POST", url, true);
+	    request.setRequestHeader("Content-Type", "application/json");
+	    request.onload = function () {
+	      if (request.status === 200) {}
+	    }.bind(this);
+	    request.send(JSON.stringify(match));
 	  },
 	
 	  render: function render() {
@@ -20480,45 +20510,36 @@
 	
 	    var leagueMatches = this.state.matches.map(function (match, index) {
 	      return React.createElement(
-	        "div",
-	        {
-	          __self: this
+	        "tr",
+	        { key: index, __self: this
 	        },
 	        React.createElement(
-	          "h3",
+	          "td",
 	          {
 	            __self: this
 	          },
-	          React.createElement("home_team", {
-	            __self: this
-	          })
+	          match.home_team
 	        ),
 	        React.createElement(
-	          "h3",
+	          "td",
 	          {
 	            __self: this
 	          },
-	          React.createElement("home_score", {
-	            __self: this
-	          })
+	          match.home_score
 	        ),
 	        React.createElement(
-	          "h3",
+	          "td",
 	          {
 	            __self: this
 	          },
-	          React.createElement("away_score", {
-	            __self: this
-	          })
+	          match.away_score
 	        ),
 	        React.createElement(
-	          "h3",
+	          "td",
 	          {
 	            __self: this
 	          },
-	          React.createElement("away_team", {
-	            __self: this
-	          })
+	          match.away_team
 	        )
 	      );
 	    });
@@ -20544,8 +20565,7 @@
 	      ),
 	      React.createElement(
 	        "table",
-	        {
-	          __self: this
+	        { "class": "table", __self: this
 	        },
 	        React.createElement(
 	          "thead",
@@ -20631,16 +20651,60 @@
 	        )
 	      ),
 	      React.createElement(
-	        "div",
-	        {
-	          __self: this
+	        "table",
+	        { "class": "table", __self: this
 	        },
-	        leagueMatches
+	        React.createElement(
+	          "thead",
+	          {
+	            __self: this
+	          },
+	          React.createElement(
+	            "tr",
+	            {
+	              __self: this
+	            },
+	            React.createElement(
+	              "th",
+	              {
+	                __self: this
+	              },
+	              "Home Team"
+	            ),
+	            React.createElement(
+	              "th",
+	              {
+	                __self: this
+	              },
+	              "Home Score"
+	            ),
+	            React.createElement(
+	              "th",
+	              {
+	                __self: this
+	              },
+	              "Away Score"
+	            ),
+	            React.createElement(
+	              "th",
+	              {
+	                __self: this
+	              },
+	              "Away Team"
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          "tbody",
+	          {
+	            __self: this
+	          },
+	          leagueMatches
+	        )
 	      ),
 	      React.createElement(TeamGenerator, { onTeamSubmit: this.onTeamSubmit, __self: this
 	      }),
-	      React.createElement(MatchGenerator, {
-	        __self: this
+	      React.createElement(MatchGenerator, { onMatchSubmit: this.onMatchSubmit, __self: this
 	      }),
 	      React.createElement(
 	        "div",
@@ -20673,6 +20737,7 @@
 	
 	
 	  render: function render() {
+	
 	    return React.createElement('div', {
 	      __self: this
 	    });
@@ -20695,21 +20760,47 @@
 	
 	
 	  getInitialState: function getInitialState() {
-	    return { match: '' };
+	    return { home_team: '', home_score: '', away_score: '', away_team: '' };
 	  },
 	
-	  handleTeamChange: function handleTeamChange(e) {
-	    this.setState({ match: e.target.value });
+	  handleHomeTeamChange: function handleHomeTeamChange(e) {
+	    this.setState({ home_team: e.target.value });
+	  },
+	
+	  handleHomeScoreChange: function handleHomeScoreChange(e) {
+	    this.setState({ home_score: e.target.value });
+	  },
+	
+	  handleAwayScoreChange: function handleAwayScoreChange(e) {
+	    this.setState({ away_score: e.target.value });
+	  },
+	
+	  handleAwayTeamChange: function handleAwayTeamChange(e) {
+	    this.setState({ away_team: e.target.value });
 	  },
 	
 	  handleMatchSubmit: function handleMatchSubmit(e) {
 	    e.preventDefault();
-	    var match = this.state.match.trim();
-	    if (!match) {
+	    var home_team = this.state.home_team.trim();
+	    var home_score = this.state.home_score.trim();
+	    var away_score = this.state.away_score.trim();
+	    var away_team = this.state.away_team.trim();
+	    if (!home_team || !home_score || !away_score || !away_team) {
 	      return;
 	    }
-	    this.props.onLeagueSubmit({ match: match });
-	    this.setState({ match: '' });
+	    this.props.onMatchSubmit({ home_team: home_team, home_score: home_score, away_score: away_score, away_team: away_team });
+	  },
+	
+	  homeTeamWon: function homeTeamWon() {
+	    if (match.home_score > match.away_score) return true;
+	  },
+	
+	  awayTeamWon: function awayTeamWon() {
+	    if (match.home_score < match.away_score) return true;
+	  },
+	
+	  draw: function draw() {
+	    if (match.home_score === match.away_score) return true;
 	  },
 	
 	  render: function render() {
@@ -20723,20 +20814,17 @@
 	        'form',
 	        { className: 'matchForm', onSubmit: this.handleMatchSubmit, __self: this
 	        },
-	        React.createElement('input', { type: 'text', placeholder: 'Home team name', value: this.state.home_team, onChange: this.handleMatchChange, __self: this
+	        React.createElement('input', { type: 'text', placeholder: 'Home team name', value: this.state.home_team, onChange: this.handleHomeTeamChange, __self: this
 	        }),
-	        React.createElement('input', { type: 'text', placeholder: 'Home team score', value: this.state.home_score, onChange: this.handleMatchChange, __self: this
+	        React.createElement('input', { type: 'text', placeholder: 'Home team score', value: this.state.home_score, onChange: this.handleHomeScoreChange, __self: this
 	        }),
-	        React.createElement('input', { type: 'integer', placeholder: 'Away team score', value: this.state.away_score, onChange: this.handleMatchChange, __self: this
+	        React.createElement('input', { type: 'integer', placeholder: 'Away team score', value: this.state.away_score, onChange: this.handleAwayScoreChange, __self: this
 	        }),
-	        React.createElement('input', { type: 'text', placeholder: 'Away team name', value: this.state.away_team, onChange: this.handleMatchChange, __self: this
+	        React.createElement('input', { type: 'text', placeholder: 'Away team name', value: this.state.away_team, onChange: this.handleAwayTeamChange, __self: this
 	        }),
 	        React.createElement('input', { type: 'submit', value: 'Post', __self: this
 	        })
-	      ),
-	      React.createElement('div', {
-	        __self: this
-	      })
+	      )
 	    );
 	  }
 	
@@ -20773,7 +20861,150 @@
 	      return;
 	    }
 	    this.props.onTeamSubmit({ name: teamName });
-	    // this.setState({team: team})
+	  },
+	
+	  teamMatchesPlayed: function teamMatchesPlayed() {
+	    var _iteratorNormalCompletion = true;
+	    var _didIteratorError = false;
+	    var _iteratorError = undefined;
+	
+	    try {
+	      for (var _iterator = matches[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	        match = _step.value;
+	
+	
+	        if (match.home_team === team.name) {
+	          team.played += 1;
+	          team.goals_for += match.home_score;
+	        } else if (match.away_team === team.name) {
+	          team.played += 1;
+	          team.goals_for += match.away_score;
+	        } else {
+	          return;
+	        };
+	      }
+	    } catch (err) {
+	      _didIteratorError = true;
+	      _iteratorError = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion && _iterator.return) {
+	          _iterator.return();
+	        }
+	      } finally {
+	        if (_didIteratorError) {
+	          throw _iteratorError;
+	        }
+	      }
+	    }
+	
+	    ;
+	  },
+	
+	  teamWins: function teamWins() {
+	    var _iteratorNormalCompletion2 = true;
+	    var _didIteratorError2 = false;
+	    var _iteratorError2 = undefined;
+	
+	    try {
+	      for (var _iterator2 = matches[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	        match = _step2.value;
+	
+	        if (match.home_team === team.name && match.homeTeamWon) {
+	          team.wins += 1;
+	          team.points += 3;
+	        } else if (match.away_team === team.name && match.awayTeamWon) {
+	          team.wins += 1;
+	          team.points += 3;
+	        } else {
+	          return;
+	        }
+	      }
+	    } catch (err) {
+	      _didIteratorError2 = true;
+	      _iteratorError2 = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	          _iterator2.return();
+	        }
+	      } finally {
+	        if (_didIteratorError2) {
+	          throw _iteratorError2;
+	        }
+	      }
+	    }
+	
+	    return total;
+	  },
+	
+	  teamDraws: function teamDraws() {
+	    var _iteratorNormalCompletion3 = true;
+	    var _didIteratorError3 = false;
+	    var _iteratorError3 = undefined;
+	
+	    try {
+	      for (var _iterator3 = matches[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+	        match = _step3.value;
+	
+	        if ((match.home_team || match.away_team) === team.name && match.draw) {
+	          team.draws += 1;
+	          team.points += 1;
+	        }
+	      }
+	    } catch (err) {
+	      _didIteratorError3 = true;
+	      _iteratorError3 = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion3 && _iterator3.return) {
+	          _iterator3.return();
+	        }
+	      } finally {
+	        if (_didIteratorError3) {
+	          throw _iteratorError3;
+	        }
+	      }
+	    }
+	
+	    return total;
+	  },
+	
+	  teamLosses: function teamLosses() {
+	    var _iteratorNormalCompletion4 = true;
+	    var _didIteratorError4 = false;
+	    var _iteratorError4 = undefined;
+	
+	    try {
+	      for (var _iterator4 = matches[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+	        match = _step4.value;
+	
+	        if (match.home_team === team.name && match.awayTeamWon) {
+	          team.losses += 1;
+	        } else if (match.away_team === team.name && match.homeTeamWon) {
+	          team.losses += 1;
+	        } else {
+	          return;
+	        }
+	      }
+	    } catch (err) {
+	      _didIteratorError4 = true;
+	      _iteratorError4 = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion4 && _iterator4.return) {
+	          _iterator4.return();
+	        }
+	      } finally {
+	        if (_didIteratorError4) {
+	          throw _iteratorError4;
+	        }
+	      }
+	    }
+	  },
+	
+	  teamGoalDifference: function teamGoalDifference() {
+	    team.goal_difference === team.goals_for - team.goals_against;
 	  },
 	
 	  render: function render() {
@@ -20798,36 +21029,8 @@
 	
 	module.exports = TeamGenerator;
 	
-	//and also add the team to the database (an ajax POST request)
 	//Make another form to make matches and take in match results
 	//make that form update the league table appropriately
-
-/***/ },
-/* 172 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var React = __webpack_require__(1);
-	var PropTypes = React.PropTypes;
-	
-	var Team = React.createClass({
-	  displayName: 'Team',
-	
-	
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      {
-	        __self: this
-	      },
-	      this.props.name
-	    );
-	  }
-	
-	});
-	
-	module.exports = Team;
 
 /***/ }
 /******/ ]);

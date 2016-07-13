@@ -4,6 +4,8 @@ var PropTypes = React.PropTypes;
 var LeagueGenerator = React.createClass({
 
   render: function() {
+
+    
     return (
       <div />
     );

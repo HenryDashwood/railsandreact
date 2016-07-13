@@ -8,3 +8,9 @@ h1 {
   display: inline-block;
   font-size: 50px;
 }
+
+.table {
+  padding: 30px 30px;
+  border-color: black;
+  border-width: : 3px;
+}

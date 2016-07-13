@@ -19,7 +19,64 @@ var TeamGenerator = React.createClass({
       return;
     }
     this.props.onTeamSubmit({name: teamName})
-    // this.setState({team: team})
+  },
+
+  teamMatchesPlayed: function() {
+    for(match of matches) {
+
+      if(match.home_team === team.name) {
+        team.played += 1;
+        team.goals_for += match.home_score;
+      } else if(match.away_team === team.name) {
+        team.played += 1;
+        team.goals_for += match.away_score;
+      } else {
+        return;
+      };
+    };
+  },
+
+  teamWins: function() {
+    for(match of matches) {
+      if((match.home_team === team.name) && match.homeTeamWon) {
+        team.wins += 1;
+        team.points += 3;
+      } else if((match.away_team === team.name) && match.awayTeamWon) {
+        team.wins += 1;
+        team.points += 3;
+      }
+      else {
+        return;
+      }
+    }
+    return total;
+  },
+
+  teamDraws: function() {
+    for(match of matches) {
+      if(((match.home_team || match.away_team) === team.name) && match.draw) {
+        team.draws += 1;
+        team.points += 1;
+      }
+    }
+    return total;
+  },
+
+  teamLosses: function() {
+    for(match of matches) {
+      if((match.home_team === team.name) && match.awayTeamWon) {
+        team.losses += 1;
+      } else if((match.away_team === team.name) && match.homeTeamWon) {
+        team.losses += 1;
+      }
+      else {
+        return;
+      }
+    }
+  },
+
+  teamGoalDifference: function() {
+    team.goal_difference === team.goals_for - team.goals_against;
   },
 
   render: function() {
@@ -37,6 +94,5 @@ var TeamGenerator = React.createClass({
 
 module.exports = TeamGenerator;
 
-//and also add the team to the database (an ajax POST request)
 //Make another form to make matches and take in match results
 //make that form update the league table appropriately
